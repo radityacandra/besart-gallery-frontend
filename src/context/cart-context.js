@@ -6,8 +6,8 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = React.useState([])
 
   const addCartItems = (product) => {
-    const existingProduct = cartItems.filter((item) => item.id = product.id)
-    if (existingProduct == null || existingProduct.length == 0) {
+    const existingProduct = cartItems.filter((item) => item.id === product.id)
+    if (existingProduct === null || existingProduct.length === 0) {
       setCartItems([...cartItems, product])
     }
   }

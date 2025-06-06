@@ -7,12 +7,45 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { navigate } from 'gatsby';
 import { useCart } from '../context/cart-context';
+import { useOrder } from '../context/order-context';
+import { default as axios } from 'axios';
 
 const PaymentPage = () => {
   const { token, profileName } = useAuth();
-  const { clearCartItems } = useCart();
-  clearCartItems();
+  const { cartItems, clearCartItems } = useCart();
+  const { orderId } = useOrder();
+  const totalPrice = React.useMemo(() => {
+    let totalPrice = 0
 
+    cartItems.forEach(product => {
+      totalPrice += product.price
+    })
+
+    return totalPrice
+  }, [])
+  
+  React.useEffect(() => {
+    if (token === null) {
+      navigate('http://localhost:8080/realms/myrealm/protocol/openid-connect/auth?client_id=myclient&redirect_uri=http://localhost:8000/login-callback&response_type=code&scope=openid')
+    }
+  }, [])
+
+  React.useEffect(() => {
+    clearCartItems()
+  }, [])
+
+  const handleConfirmPayment = () => {
+    axios.put("http://localhost:9000/orders/" + orderId + "/status", {
+      status: "confirmed"
+    }, {
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      }
+    }).then(() => navigate('/'))
+  }
+  
   return (
     <main style={{backgroundColor: '#f9f9f9', minHeight: '100vh'}}>
       <AppBar userName={profileName} />
@@ -31,16 +64,16 @@ const PaymentPage = () => {
           </Typography>
           <Typography variant="body1" gutterBottom sx={{textAlign: 'center'}} fontWeight="bold">Total Amount</Typography>
           <Typography variant="h4" gutterBottom sx={{textAlign: 'center', border: '1px dashed #000', borderRadius: 2, p: 2, mx: 24 }}>
-            IDR {new Intl.NumberFormat("id").format(10000000)}
+            IDR {new Intl.NumberFormat("id").format(totalPrice)}
           </Typography>
           <Typography variant="body1" gutterBottom sx={{textAlign: 'center'}}>
             Please transfer the amount to the bank account above before the order deadline is over.
           </Typography>
           <Typography variant="body1" gutterBottom sx={{textAlign: 'center'}}>
-            After the transfer, please click confirm payment button below and send the proof of payment to the following email <a href="mailto:info@besartgallery.com">info@besartgallery.com</a>
+            After the transfer, please click confirm payment button below and send the proof of payment to the following email <a href="mailto:bambang_sudarsono@yahoo.com">bambang_sudarsono@yahoo.com</a>
           </Typography>
           <Box sx={{display: 'flex', justifyContent: 'center', mt: 6}}>
-            <Button variant="contained" color="warning" size="large" onClick={() => navigate('/')}>
+            <Button variant="contained" color="warning" size="large" onClick={handleConfirmPayment}>
               <Typography variant="h6" fontWeight="bold">Confirm Payment</Typography>
             </Button>
           </Box>

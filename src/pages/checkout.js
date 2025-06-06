@@ -8,9 +8,64 @@ import TextField from '@mui/material/TextField';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import { navigate } from 'gatsby';
+import { useCart } from '../context/cart-context';
+import { useOrder } from '../context/order-context';
+import { default as axios } from 'axios';
 
 const CheckoutPage = () => {
-  const { token, profileName } = useAuth();
+  const { token, profileName } = useAuth()
+  const { cartItems } = useCart()
+  const { setOrderId } = useOrder()
+
+  React.useEffect(() => {
+    if (token === null) {
+      navigate('http://localhost:8080/realms/myrealm/protocol/openid-connect/auth?client_id=myclient&redirect_uri=http://localhost:8000/login-callback&response_type=code&scope=openid')
+    }
+  }, [])
+
+  let totalPrice = 0
+  cartItems.forEach(product => {
+    totalPrice += product.price
+  })
+
+  const [shipping, setShipping] = React.useState({
+    fullName: "",
+    phoneNumber: "",
+    fullAddress: "",
+    notes: null
+  })
+
+  const handleShipping = (event) => {
+    const { name, value } = event.target
+    setShipping(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  const checkoutHandler = () => {
+    const orderItems = cartItems.map((item) => ({
+      productId: item.id,
+      amount: 1
+    }))
+
+    const reqBody = {
+      shipping: shipping,
+      orderItems: orderItems
+    }
+
+    axios.post("http://localhost:9000/orders", reqBody, {
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      }
+    }).then((response) => {
+      setOrderId(response.data.id)
+
+      navigate("/payment")
+    })
+  }
 
   return (
     <main style={{backgroundColor: '#f9f9f9'}}>
@@ -34,6 +89,8 @@ const CheckoutPage = () => {
               <TextField
                 required
                 fullWidth
+                name="fullName"
+                onChange={handleShipping}
                 label="Full Name"></TextField>
             </Grid>
             
@@ -41,6 +98,8 @@ const CheckoutPage = () => {
               <TextField
                 required
                 fullWidth
+                name="phoneNumber"
+                onChange={handleShipping}
                 label="Phone Number"></TextField>
             </Grid>
 
@@ -50,12 +109,16 @@ const CheckoutPage = () => {
                 fullWidth
                 multiline
                 rows={3}
+                name="fullAddress"
+                onChange={handleShipping}
                 label="Full Address"></TextField>
             </Grid>
 
             <Grid size={12}>
               <TextField
                 fullWidth
+                onChange={handleShipping}
+                name="notes"
                 label="Additional Notes"></TextField>
             </Grid>
           </Grid>
@@ -70,44 +133,46 @@ const CheckoutPage = () => {
             <Grid size={12}>
               <Typography variant="h6" align="left">Order Detail</Typography>
             </Grid>
-            <Grid size={12}>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                sx={{
-                  padding: 2,
-                }}
-                gap={2}>
+            {cartItems.map((product) => (
+              <Grid size={12} key={product.id}>
                 <Box
-                  component="img"
-                  src="https://template.getbazaar.io/_next/image?url=%2Fassets%2Fimages%2Ffurniture-products%2Ffurniture-2.png&w=828&q=75"
-                  alt="Sunset Over Still Waters"
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
                   sx={{
-                    width: 128,
-                    height: 128,
-                    objectFit: 'cover',
-                    borderRadius: 1,
+                    padding: 2,
                   }}
-                />
+                  gap={2}>
+                  <Box
+                    component="img"
+                    src={product.image}
+                    alt={product.name}
+                    sx={{
+                      width: 128,
+                      height: 128,
+                      objectFit: 'cover',
+                      borderRadius: 1,
+                    }}
+                  />
 
-                {/* Middle: Info */}
-                <Box flex={1} sx={{
-                  textAlign: 'left',              
-                }}>
-                  <Typography variant="body1">
-                    Sunset Over Still Waters
-                  </Typography>
-                </Box>
+                  {/* Middle: Info */}
+                  <Box flex={1} sx={{
+                    textAlign: 'left',              
+                  }}>
+                    <Typography variant="body1">
+                      {product.name}
+                    </Typography>
+                  </Box>
 
-                {/* Right: Quantity & Price */}
-                <Box whiteSpace="nowrap">
-                  <Typography variant="body1">
-                    1 x IDR {new Intl.NumberFormat("id").format(10000000)}
-                  </Typography>
+                  {/* Right: Quantity & Price */}
+                  <Box whiteSpace="nowrap">
+                    <Typography variant="body1">
+                      1 x IDR {new Intl.NumberFormat("id").format(product.price)}
+                    </Typography>
+                  </Box>
                 </Box>
-              </Box>
-            </Grid>
+              </Grid>
+            ))}
           </Grid>
         </Grid>
 
@@ -121,7 +186,7 @@ const CheckoutPage = () => {
             justifyContent: "space-between"
           }}>
             <Typography color="text.secondary" variant="body1" sx={{textAlign: "left"}}>Subtotal</Typography>
-            <Typography color="text.primary" variant="body1" sx={{textAlign: "right"}}>IDR {new Intl.NumberFormat("id").format(10000000)}</Typography>
+            <Typography color="text.primary" variant="body1" sx={{textAlign: "right"}}>IDR {new Intl.NumberFormat("id").format(totalPrice)}</Typography>
           </Box>
 
           <Box display="flex" sx={{
@@ -147,10 +212,10 @@ const CheckoutPage = () => {
             mt: 2
           }}>
             <Typography color="text.primary" variant="h6" sx={{textAlign: "left"}}>Total</Typography>
-            <Typography color="text.primary" variant="h6" sx={{textAlign: "right"}}>IDR {new Intl.NumberFormat("id").format(10000000)}</Typography>
+            <Typography color="text.primary" variant="h6" sx={{textAlign: "right"}}>IDR {new Intl.NumberFormat("id").format(totalPrice)}</Typography>
           </Box>
 
-          <Button fullWidth variant="contained" color="primary" sx={{mt: 4}} onClick={() => navigate('/payment')}>Pay Now</Button>
+          <Button fullWidth variant="contained" color="primary" sx={{mt: 4}} onClick={checkoutHandler}>Pay Now</Button>
         </Grid>
       </Grid>
 

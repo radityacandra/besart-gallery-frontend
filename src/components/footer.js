@@ -28,9 +28,8 @@ export default function FooterSection() {
               BESArt Gallery
             </Typography>
             <Typography color="text.secondary">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor
-              libero id et, in gravida. Sit diam duis mauris nulla cursus. Erat
-              et lectus vel ut sollicitudin elit at amet.
+              BESArt Gallery is the online showcase of renowned Indonesian painter Bambang Eko Sudarsono, whose initials form the heart of the brand. 
+              With decades of artistic experience and a deep passion for capturing nature, culture, and emotion through brush and canvas, Bambang brings his original works directly to art enthusiasts around the world.
             </Typography>
           </Grid>
 

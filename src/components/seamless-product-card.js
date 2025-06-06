@@ -41,11 +41,11 @@ const SeamlessProductCard = (props) => {
         </Typography>
         <Box display="flex" justifyContent="center" alignItems="center" gap={1} mt={0.5}>
           <Typography variant="subtitle1" color="primary">
-            ${price.toFixed(2)}
+            IDR {new Intl.NumberFormat("id").format(price)}
           </Typography>
           {oldPrice && (
             <Typography variant="body2" sx={{ textDecoration: 'line-through', color: '#999' }}>
-              ${oldPrice.toFixed(2)}
+              IDR {new Intl.NumberFormat("id").format(oldPrice)}
             </Typography>
           )}
         </Box>

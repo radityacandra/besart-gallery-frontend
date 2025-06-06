@@ -7,6 +7,8 @@ import CartDrawer from '../../components/cart';
 import SeamlessProductCard from '../../components/seamless-product-card';
 import PaginationComponent from '../../components/pagination';
 import { navigate } from 'gatsby';
+import { default as axios } from 'axios';
+import LoginModalComponent from "../../components/login-modal";
 
 const categories = [
   'All',
@@ -19,15 +21,38 @@ const categories = [
 
 const ProductListPage = () => {
   const { token, profileName } = useAuth();
+  const [products, setProducts] = React.useState([])
 
-  const [cartDrawerShowed, setCartDrawerShowed] = React.useState(false);
+  React.useEffect(() => {
+    axios.get("http://localhost:9000/products").then(function (response) {
+      setProducts(response.data)
+    })
+  }, [])
+
+  const [cartDrawerShowed, setCartDrawerShowed] = React.useState(false)
+  const [loginModalShowed, setLoginModalShowed] = React.useState(false)
 
   function showCart() {
-    setCartDrawerShowed(true)
+    if (token) {
+      setCartDrawerShowed(true)
+    } else {
+      setLoginModalShowed(true)
+    }
   }
 
   function closeCart() {
     setCartDrawerShowed(false)
+  }
+
+  function closeModal() {
+    setLoginModalShowed(false)
+  }
+
+  let modal = ""
+  if (loginModalShowed) {
+    modal = <LoginModalComponent open={loginModalShowed} onClose={closeModal} />
+  } else {
+    modal = ""
   }
 
   return (
@@ -58,126 +83,18 @@ const ProductListPage = () => {
         </Grid>
 
         <Grid container spacing={2} size={8}>
-          <Grid size={4}>
-            <SeamlessProductCard 
-              image="https://template.getbazaar.io/_next/image?url=%2Fassets%2Fimages%2Ffurniture-products%2Ffurniture-2.png&w=828&q=75"
-              name="Yellow Sofa"
-              price={184.0}
-              oldPrice={230.0}
-              rating={4}
-              onClick={() => { navigate("/products/some-product") }}
-            />
-          </Grid>
-          <Grid size={4}>
-            <SeamlessProductCard 
-              image="https://template.getbazaar.io/_next/image?url=%2Fassets%2Fimages%2Ffurniture-products%2Ffurniture-5.png&w=828&q=75"
-              name="Single Round Sofa"
-              price={184.0}
-              oldPrice={230.0}
-              rating={4}
-              onClick={() => { navigate("/products/some-product") }}
-            />
-          </Grid>
-          <Grid size={4}>
-            <SeamlessProductCard 
-              image="https://template.getbazaar.io/_next/image?url=%2Fassets%2Fimages%2Ffurniture-products%2Ffurniture-8.png&w=828&q=75"
-              name="Brown Table"
-              price={184.0}
-              oldPrice={230.0}
-              rating={4}
-              onClick={() => { navigate("/products/some-product") }}
-            />
-          </Grid>
-          <Grid size={4}>
-            <SeamlessProductCard 
-              image="https://template.getbazaar.io/_next/image?url=%2Fassets%2Fimages%2Ffurniture-products%2Ffurniture-8.png&w=828&q=75"
-              name="Brown Table"
-              price={184.0}
-              oldPrice={230.0}
-              rating={4}
-              onClick={() => { navigate("/products/some-product") }}
-            />
-          </Grid>
-          <Grid size={4}>
-            <SeamlessProductCard 
-              image="https://template.getbazaar.io/_next/image?url=%2Fassets%2Fimages%2Ffurniture-products%2Ffurniture-2.png&w=828&q=75"
-              name="Yellow Sofa"
-              price={184.0}
-              oldPrice={230.0}
-              rating={4}
-              onClick={() => { navigate("/products/some-product") }}
-            />
-          </Grid>
-          <Grid size={4}>
-            <SeamlessProductCard 
-              image="https://template.getbazaar.io/_next/image?url=%2Fassets%2Fimages%2Ffurniture-products%2Ffurniture-5.png&w=828&q=75"
-              name="Single Round Sofa"
-              price={184.0}
-              oldPrice={230.0}
-              rating={4}
-              onClick={() => { navigate("/products/some-product") }}
-            />
-          </Grid>
-          <Grid size={4}>
-            <SeamlessProductCard 
-              image="https://template.getbazaar.io/_next/image?url=%2Fassets%2Fimages%2Ffurniture-products%2Ffurniture-2.png&w=828&q=75"
-              name="Yellow Sofa"
-              price={184.0}
-              oldPrice={230.0}
-              rating={4}
-              onClick={() => { navigate("/products/some-product") }}
-            />
-          </Grid>
-          <Grid size={4}>
-            <SeamlessProductCard 
-              image="https://template.getbazaar.io/_next/image?url=%2Fassets%2Fimages%2Ffurniture-products%2Ffurniture-5.png&w=828&q=75"
-              name="Single Round Sofa"
-              price={184.0}
-              oldPrice={230.0}
-              rating={4}
-              onClick={() => { navigate("/products/some-product") }}
-            />
-          </Grid>
-          <Grid size={4}>
-            <SeamlessProductCard 
-              image="https://template.getbazaar.io/_next/image?url=%2Fassets%2Fimages%2Ffurniture-products%2Ffurniture-8.png&w=828&q=75"
-              name="Brown Table"
-              price={184.0}
-              oldPrice={230.0}
-              rating={4}
-              onClick={() => { navigate("/products/some-product") }}
-            />
-          </Grid>
-          <Grid size={4}>
-            <SeamlessProductCard 
-              image="https://template.getbazaar.io/_next/image?url=%2Fassets%2Fimages%2Ffurniture-products%2Ffurniture-8.png&w=828&q=75"
-              name="Brown Table"
-              price={184.0}
-              oldPrice={230.0}
-              rating={4}
-              onClick={() => { navigate("/products/some-product") }}
-            />
-          </Grid>
-          <Grid size={4}>
-            <SeamlessProductCard 
-              image="https://template.getbazaar.io/_next/image?url=%2Fassets%2Fimages%2Ffurniture-products%2Ffurniture-2.png&w=828&q=75"
-              name="Yellow Sofa"
-              price={184.0}
-              oldPrice={230.0}
-              rating={4}
-              onClick={() => { navigate("/products/some-product") }}
-            />
-          </Grid>
-          <Grid size={4}>
-            <SeamlessProductCard 
-              image="https://template.getbazaar.io/_next/image?url=%2Fassets%2Fimages%2Ffurniture-products%2Ffurniture-5.png&w=828&q=75"
-              name="Single Round Sofa"
-              price={184.0}
-              oldPrice={230.0}
-              rating={4}
-              onClick={() => { navigate("/products/some-product") }}
-            />
-          </Grid>
+          {products.map((product) => (
+            <Grid size={4} key={product.id}>
+              <SeamlessProductCard 
+                image={product.image}
+                name={product.name}
+                price={product.discountedPrice}
+                oldPrice={product.originalPrice}
+                rating={product.rating}
+                onClick={() => { navigate("/products/" + product.id) }}
+              />
+            </Grid>
+          ))}
 
           <Grid size={12}>
             <PaginationComponent count={100} page={1} />
@@ -186,6 +103,8 @@ const ProductListPage = () => {
       </Grid>
 
       <CartDrawer open={cartDrawerShowed} onClose={closeCart} />
+
+      {modal}
     </main>
   )
 }

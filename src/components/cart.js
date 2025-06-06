@@ -21,17 +21,22 @@ export default function CartDrawer({ open, onClose }) {
   });
 
   let buttonDisabled = false
-  if (totalCost == 0) {
+  if (totalCost === 0) {
     buttonDisabled = true
   }
 
-  const CartItem = ({ name, price }) => (
+  const CartItem = ({ name, price, image }) => (
     <Box display="flex" alignItems="center" gap={2}>
       <Box
         width={64}
         height={64}
-        bgcolor="grey.100"
+        component={"img"}
+        src={image}
+        alt={name}
         borderRadius={2}
+        sx={{
+          objectFit: 'contain',
+        }}
       />
       <Box flexGrow={1}>
         <Typography fontSize={14} fontWeight={500}>{name}</Typography>

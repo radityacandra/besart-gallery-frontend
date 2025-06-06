@@ -15,15 +15,26 @@ import FooterSection from '../../components/footer';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import CartDrawer from '../../components/cart';
+import { default as axios } from 'axios';
+import LoginModalComponent from "../../components/login-modal";
 
-const ProductListPage = () => {
-  const { token, profileName } = useAuth();
-  const { addCartItems } = useCart();
+const ProductListPage = ({ params }) => {
+  const { token, profileName } = useAuth()
+  const { addCartItems } = useCart()
 
-  const [cartDrawerShowed, setCartDrawerShowed] = React.useState(false);
+  const [cartDrawerShowed, setCartDrawerShowed] = React.useState(false)
+  const [loginModalShowed, setLoginModalShowed] = React.useState(false)
+
+  const [product, setProduct] = React.useState({
+    description: ""
+  })
 
   function showCart() {
-    setCartDrawerShowed(true)
+    if (token) {
+      setCartDrawerShowed(true)
+    } else {
+      setLoginModalShowed(true)
+    }
   }
 
   function closeCart() {
@@ -31,22 +42,34 @@ const ProductListPage = () => {
   }
 
   function addToCartHandler() {
-    addCartItems({
-      id: product.id,
-      name: product.name,
-      price: product.price
-    })
+    if (token) {
+      addCartItems({
+        id: product.id,
+        name: product.name,
+        price: product.discountedPrice,
+        image: product.image
+      })
+    } else {
+      setLoginModalShowed(true)
+    }
   }
 
-  const product = {
-    id: "1c9f8d08-4e79-42bd-a4d2-5b289bbd7f50",
-    name: "Sunset Over Still Waters",
-    price: "10000000",
-    dimension: "120 x 80 cm",
-    medium: "Oil Painting on Canvas",
-    image: "https://template.getbazaar.io/_next/image?url=%2Fassets%2Fimages%2Ffurniture-products%2Ffurniture-2.png&w=828&q=75",
-    description: "As the golden sun dips below the horizon, it casts a warm, amber glow across a tranquil lake, capturing a fleeting moment of perfect stillness. “Sunset Over Still Waters” evokes a sense of calm and introspection — a gentle balance between light and shadow, movement and rest.\n\nWith delicate brushstrokes and a rich color palette, this piece invites the viewer into a quiet world where time seems to pause. Ideal for living spaces or galleries that celebrate peace, nature, and emotional depth."
+  function closeModal() {
+    setLoginModalShowed(false)
   }
+
+  let modal = ""
+  if (loginModalShowed) {
+    modal = <LoginModalComponent open={loginModalShowed} onClose={closeModal} />
+  } else {
+    modal = ""
+  }
+
+  React.useEffect(() => {
+    axios.get("http://localhost:9000/products/" + params.id).then(function (response) {
+      setProduct(response.data)
+    })
+  }, [params.id])
 
   return (
     <main>
@@ -89,7 +112,7 @@ const ProductListPage = () => {
               overflow: 'hidden',
               width: '100%',
               height: 500,
-              backgroundImage: `url(https://template.getbazaar.io/_next/image?url=%2Fassets%2Fimages%2Ffurniture-products%2Ffurniture-2.png&w=828&q=75)`,
+              backgroundImage: `url(` + product.image + `)`,
               backgroundRepeat: 'no-repeat',
               backgroundSize: 'contain',
               backgroundPosition: 'center',
@@ -102,11 +125,16 @@ const ProductListPage = () => {
         </Grid>
         <Grid size={8}>
           <Typography variant="h4" fontWeight="medium" color="text.primary">
-            {product.title}
+            {product.name}
           </Typography>
-          <Typography variant="h5">
-            IDR {new Intl.NumberFormat("id").format(product.price)}
-          </Typography>
+          <Box display="flex" justifyContent="left" alignItems="center" gap={1} mt={0.5}>
+            <Typography variant="h5">
+              IDR {new Intl.NumberFormat("id").format(product.discountedPrice)}
+            </Typography>
+            <Typography variant="h5" sx={{ textDecoration: 'line-through', color: '#999' }}>
+              IDR {new Intl.NumberFormat("id").format(product.originalPrice)}
+            </Typography>
+          </Box>
           <Typography variant="h6" color="text.secondary">
             Medium: {product.medium} | Dimensions: {product.dimension}
           </Typography>
@@ -138,6 +166,8 @@ const ProductListPage = () => {
       <CartDrawer open={cartDrawerShowed} onClose={closeCart} />
 
       <FooterSection />
+
+      {modal}
     </main>
   )
 }
@@ -147,7 +177,7 @@ export default ProductListPage
 export const Head = () => {
   return (
     <>
-      <title>Sunset Over Still Waters | Product</title>
+      <title>Sunset Over The Lake | Product</title>
       <meta name="viewport" content="initial-scale=1, width=device-width" />
     </>
   )
