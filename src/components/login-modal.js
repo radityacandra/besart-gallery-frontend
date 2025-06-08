@@ -28,7 +28,7 @@ export default function LoginModalComponent({ open, onClose }) {
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             Before proceed any further transaction, you need to signup / login first.
           </Typography>
-          <Button variant="contained" sx={{ mt: 2 }} href="http://localhost:8080/realms/myrealm/protocol/openid-connect/auth?client_id=myclient&redirect_uri=http://localhost:8000/login-callback&response_type=code&scope=openid">Sign Up / Login</Button>
+          <Button variant="contained" sx={{ mt: 2 }} href="http://localhost:8080/realms/myrealm/protocol/openid-connect/auth?client_id=myclient&redirect_uri=http://besarts.com/login-callback&response_type=code&scope=openid">Sign Up / Login</Button>
         </Box>
       </Modal>
   )

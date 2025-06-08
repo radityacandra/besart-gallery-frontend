@@ -14,7 +14,7 @@ const LoginCallbackPage = (props) => {
       code: code,
       grant_type: "authorization_code",
       client_id: "myclient",
-      redirect_uri: "http://localhost:8000/login-callback"
+      redirect_uri: "http://besarts.com/login-callback"
     }, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"

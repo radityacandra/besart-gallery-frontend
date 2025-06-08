@@ -38,7 +38,7 @@ export default function ButtonAppBar(props) {
             </Typography>
           </Button>
 
-          <Button color="inherit" href="http://localhost:8080/realms/myrealm/protocol/openid-connect/auth?client_id=myclient&redirect_uri=http://localhost:8000/login-callback&response_type=code&scope=openid">{loginText}</Button>
+          <Button color="inherit" href="http://localhost:8080/realms/myrealm/protocol/openid-connect/auth?client_id=myclient&redirect_uri=http://besarts.com/login-callback&response_type=code&scope=openid">{loginText}</Button>
           
           <Button color='inherit' onClick={cartOnClick}>
             <Typography variant="button" sx={{ flexGrow: 1 }}>
