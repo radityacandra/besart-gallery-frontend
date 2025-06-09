@@ -19,7 +19,7 @@ export default function FooterSection() {
       <Box sx={{ py: 7, px: 4, borderTop: '1px solid #000' }}>
         <Grid container spacing={4}>
           {/* Left Side - Logo and description */}
-          <Grid size={5}>
+          <Grid size={{md: 5, xs: 12}}>
             <Typography
               variant="h5"
               fontWeight="bold"
@@ -34,7 +34,7 @@ export default function FooterSection() {
           </Grid>
 
           {/* About Us */}
-          <Grid size={2}>
+          <Grid size={{md: 2, xs: 6}}>
             <Typography variant="h6" gutterBottom>
               About Us
             </Typography>
@@ -55,7 +55,7 @@ export default function FooterSection() {
           </Grid>
 
           {/* Customer Care */}
-          <Grid size={2}>
+          <Grid size={{md: 2, xs: 6}}>
             <Typography variant="h6" gutterBottom>
               Customer Care
             </Typography>
@@ -79,14 +79,14 @@ export default function FooterSection() {
           </Grid>
 
           {/* Contact Us */}
-          <Grid size={3}>
+          <Grid size={{md: 3, xs: 12}}>
             <Typography variant="h6" gutterBottom>
               Contact Us
             </Typography>
             <Typography variant="body2" color="text.secondary">
               Address: Jalan KH. Isom No 05 RT 05 RW 05 Bancaan Tengah, Salatiga
             </Typography>
-            <Typography variant="body2" color="text.secondary" mt={1}>
+            <Typography variant="body2" color="text.secondary" mt={1} sx={{ wordBreak: 'break-all' }}>
               Email: bambang_sudarsono@yahoo.com
             </Typography>
             <Typography variant="body2" color="text.secondary" mt={1}>

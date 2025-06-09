@@ -30,7 +30,7 @@ const services = [
 ];
 
 export default function CtaSection() {
-  const phoneNumber = '628112345678'; // change to your number (no + or spaces)
+  const phoneNumber = '6281392116185';
   const prefilledMessage = encodeURIComponent("Hi! I'm interested in learning more about your gallery.");
   const whatsappLink = `https://wa.me/${phoneNumber}?text=${prefilledMessage}`;
 
@@ -65,7 +65,14 @@ export default function CtaSection() {
         </Container>
       </Box>
 
-      <Box sx={{ backgroundColor: '#fff', borderTop: '1px solid #eee' }}>
+      <Box sx={{ 
+        backgroundColor: '#fff', 
+        borderTop: '1px solid #eee',
+        display: {
+          xs: 'none', // hide on xs
+          sm: 'block', // show on sm and up
+        },    
+      }}>
         <Box sx={{ py: 6, backgroundColor: '#f9f9f9' }}>
           <Container>
             <Grid container spacing={2} justifyContent="space-between">

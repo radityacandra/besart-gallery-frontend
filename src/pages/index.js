@@ -16,6 +16,7 @@ import CartDrawer from '../components/cart';
 import { navigate } from 'gatsby';
 import { default as axios } from 'axios';
 import LoginModalComponent from "../components/login-modal";
+import { Helmet } from "react-helmet";
 
 const IndexPage = () => {
   const { token, profileName } = useAuth();
@@ -49,7 +50,7 @@ const IndexPage = () => {
   }
 
   React.useEffect(() => {
-    axios.get("http://localhost:9000/products").then(function (response) {
+    axios.get("https://api.besarts.biz.id/products").then(function (response) {
       const featured = response.data.filter((_product, index) => {
         return index < 6
       })
@@ -59,15 +60,19 @@ const IndexPage = () => {
   
   return (
     <main>
+      <Helmet>
+        <title>Home | BESArt Gallery</title>
+      </Helmet>
+
       <AppBar userName={profileName} cartOnClick={showCart} />
       <Grid container spacing={2}>
         <Grid size={12}>
           <Banner image="https://i.etsystatic.com/25519175/r/il/035ff4/3614386124/il_1588xN.3614386124_6p1i.jpg" height={400} title="BESArt Gallery" />
         </Grid>
-        <Grid size={7}>
+        <Grid size={{md: 7, xs: 12}}>
           <Banner image="https://i.etsystatic.com/21973438/r/il/d65956/4743995523/il_1588xN.4743995523_lvqh.jpg" height={300} title="Magelang Exhibition" />
         </Grid>
-        <Grid size={5}>
+        <Grid size={{md: 5, xs: 12}}>
           <Banner image="https://i.etsystatic.com/16637099/r/il/e422b7/5944792552/il_1588xN.5944792552_7dba.jpg" height={300} title="Wall Art Gallery" />
         </Grid>
         <Grid size={12}>
@@ -76,7 +81,7 @@ const IndexPage = () => {
         </Grid>
         
         {products.map((product) => (
-          <Grid size={4} key={product.id}>
+          <Grid size={{md: 4, xs: 12}} key={product.id}>
             <SeamlessProductCard 
                 image={product.image}
                 name={product.name}

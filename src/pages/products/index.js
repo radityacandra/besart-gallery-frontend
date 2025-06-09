@@ -9,6 +9,7 @@ import PaginationComponent from '../../components/pagination';
 import { navigate } from 'gatsby';
 import { default as axios } from 'axios';
 import LoginModalComponent from "../../components/login-modal";
+import { Helmet } from "react-helmet";
 
 const categories = [
   'All',
@@ -24,7 +25,7 @@ const ProductListPage = () => {
   const [products, setProducts] = React.useState([])
 
   React.useEffect(() => {
-    axios.get("http://localhost:9000/products").then(function (response) {
+    axios.get("https://api.besarts.biz.id/products").then(function (response) {
       setProducts(response.data)
     })
   }, [])
@@ -57,6 +58,10 @@ const ProductListPage = () => {
 
   return (
     <main>
+      <Helmet>
+        <title>Product List | BESArt Gallery</title>
+      </Helmet>
+
       <AppBar userName={profileName} cartOnClick={showCart} />
       <Grid container={true} spacing={2} sx={{m: 4}}>
         <Grid size={3}>
@@ -84,7 +89,7 @@ const ProductListPage = () => {
 
         <Grid container spacing={2} size={8}>
           {products.map((product) => (
-            <Grid size={4} key={product.id}>
+            <Grid size={{md: 4, xs: 12}} key={product.id}>
               <SeamlessProductCard 
                 image={product.image}
                 name={product.name}

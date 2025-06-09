@@ -9,6 +9,7 @@ import { navigate } from 'gatsby';
 import { useCart } from '../context/cart-context';
 import { useOrder } from '../context/order-context';
 import { default as axios } from 'axios';
+import { Helmet } from 'react-helmet';
 
 const PaymentPage = () => {
   const { token, profileName } = useAuth();
@@ -26,7 +27,7 @@ const PaymentPage = () => {
   
   React.useEffect(() => {
     if (token === null) {
-      navigate('http://localhost:8080/realms/myrealm/protocol/openid-connect/auth?client_id=myclient&redirect_uri=http://besarts.com/login-callback&response_type=code&scope=openid')
+      navigate('https://accounts.besarts.biz.id/realms/besart/protocol/openid-connect/auth?client_id=besart-gallery&redirect_uri=https://besarts.biz.id/login-callback&response_type=code&scope=openid')
     }
   }, [])
 
@@ -35,7 +36,7 @@ const PaymentPage = () => {
   }, [])
 
   const handleConfirmPayment = () => {
-    axios.put("http://localhost:9000/orders/" + orderId + "/status", {
+    axios.put("https://api.besarts.biz.id/orders/" + orderId + "/status", {
       status: "confirmed"
     }, {
       headers: {
@@ -48,22 +49,26 @@ const PaymentPage = () => {
   
   return (
     <main style={{backgroundColor: '#f9f9f9', minHeight: '100vh'}}>
+      <Helmet>
+        <title>Payment | BESArt Gallery</title>
+      </Helmet>
+
       <AppBar userName={profileName} />
       <Box sx={{m: 4}}>
         <Typography variant="h4" fontWeight="bold" gutterBottom>Payment</Typography>
       </Box>
 
-      <Grid container spacing={2} sx={{mt: 4, mb: 4, mx: 32, backgroundColor: '#fff', borderRadius: 2, p: 4}}>
+      <Grid container spacing={2} sx={{mt: 4, mb: 4, mx: { xs: 0, md: 32 }, backgroundColor: '#fff', borderRadius: 2, p: {md: 4, xs: 2}}}>
         <Grid size={12}>
           <Typography variant="h4" fontWeight="bold" gutterBottom align='center'>How To Pay</Typography>
           <Typography variant="body1" gutterBottom align='center'>
             To complete your order, please pay the order to the following bank account (Bank Central Asia)
           </Typography>
-          <Typography variant="h3" gutterBottom sx={{textAlign: 'center', border: '1px dashed #000', borderRadius: 2, p: 2, mx: 16 }}>
-            4500855552
+          <Typography variant="h3" gutterBottom sx={{textAlign: 'center', border: '1px dashed #000', borderRadius: 2, p: 2, mx: { md: 16, xs: 0 } }}>
+            0135747381
           </Typography>
           <Typography variant="body1" gutterBottom sx={{textAlign: 'center'}} fontWeight="bold">Total Amount</Typography>
-          <Typography variant="h4" gutterBottom sx={{textAlign: 'center', border: '1px dashed #000', borderRadius: 2, p: 2, mx: 24 }}>
+          <Typography variant="h4" gutterBottom sx={{textAlign: 'center', border: '1px dashed #000', borderRadius: 2, p: 2, mx: { md: 24, xs: 0 } }}>
             IDR {new Intl.NumberFormat("id").format(totalPrice)}
           </Typography>
           <Typography variant="body1" gutterBottom sx={{textAlign: 'center'}}>

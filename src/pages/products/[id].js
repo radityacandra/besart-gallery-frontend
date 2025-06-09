@@ -17,6 +17,7 @@ import AddIcon from '@mui/icons-material/Add';
 import CartDrawer from '../../components/cart';
 import { default as axios } from 'axios';
 import LoginModalComponent from "../../components/login-modal";
+import { Helmet } from "react-helmet";
 
 const ProductListPage = ({ params }) => {
   const { token, profileName } = useAuth()
@@ -26,6 +27,7 @@ const ProductListPage = ({ params }) => {
   const [loginModalShowed, setLoginModalShowed] = React.useState(false)
 
   const [product, setProduct] = React.useState({
+    name: "",
     description: ""
   })
 
@@ -66,13 +68,16 @@ const ProductListPage = ({ params }) => {
   }
 
   React.useEffect(() => {
-    axios.get("http://localhost:9000/products/" + params.id).then(function (response) {
+    axios.get("https://api.besarts.biz.id/products/" + params.id).then(function (response) {
       setProduct(response.data)
     })
   }, [params.id])
 
   return (
     <main>
+      <Helmet>
+        <title>{product.name} | BESArt Gallery</title>
+      </Helmet>
       <AppBar userName={profileName} cartOnClick={showCart} />
       <Container sx={{m: 4}}>
         <Breadcrumbs aria-label="breadcrumb">
@@ -123,7 +128,7 @@ const ProductListPage = ({ params }) => {
             }}
           ></Box>
         </Grid>
-        <Grid size={8}>
+        <Grid size={{md: 8, xs: 12}}>
           <Typography variant="h4" fontWeight="medium" color="text.primary">
             {product.name}
           </Typography>
@@ -140,7 +145,7 @@ const ProductListPage = ({ params }) => {
           </Typography>
         </Grid>
 
-        <Grid display="flex" size={4} sx={{justifyContent:"right", alignItems: "center"}}>
+        <Grid display="flex" size={{md: 4, xs: 12}} sx={{justifyContent:"right", alignItems: "center"}}>
           <Button variant="contained" startIcon={<AddIcon />} onClick={addToCartHandler}>Add To Cart</Button>
         </Grid>
 
@@ -177,7 +182,7 @@ export default ProductListPage
 export const Head = () => {
   return (
     <>
-      <title>Sunset Over The Lake | Product</title>
+      <title>Product Detail | BESArt Gallery</title>
       <meta name="viewport" content="initial-scale=1, width=device-width" />
     </>
   )

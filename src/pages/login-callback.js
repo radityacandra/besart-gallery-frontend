@@ -10,11 +10,11 @@ const LoginCallbackPage = (props) => {
     const params = new URLSearchParams(props.location.search);
     const code = params.get("code");
 
-    axios.post("http://localhost:8080/realms/myrealm/protocol/openid-connect/token", {
+    axios.post("https://accounts.besarts.biz.id/realms/besart/protocol/openid-connect/token", {
       code: code,
       grant_type: "authorization_code",
-      client_id: "myclient",
-      redirect_uri: "http://besarts.com/login-callback"
+      client_id: "besart-gallery",
+      redirect_uri: "https://besarts.biz.id/login-callback"
     }, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -22,7 +22,7 @@ const LoginCallbackPage = (props) => {
     }).then(function (response) {
       setToken(response.data.access_token)
 
-      axios.get("http://localhost:8080/realms/myrealm/protocol/openid-connect/userinfo", {
+      axios.get("https://accounts.besarts.biz.id/realms/besart/protocol/openid-connect/userinfo", {
         headers: {
           'Authorization': 'Bearer ' + response.data.access_token
         }

@@ -11,6 +11,7 @@ import { navigate } from 'gatsby';
 import { useCart } from '../context/cart-context';
 import { useOrder } from '../context/order-context';
 import { default as axios } from 'axios';
+import { Helmet } from "react-helmet";
 
 const CheckoutPage = () => {
   const { token, profileName } = useAuth()
@@ -19,7 +20,7 @@ const CheckoutPage = () => {
 
   React.useEffect(() => {
     if (token === null) {
-      navigate('http://localhost:8080/realms/myrealm/protocol/openid-connect/auth?client_id=myclient&redirect_uri=http://besarts.com/login-callback&response_type=code&scope=openid')
+      navigate('https://accounts.besarts.biz.id/realms/besart/protocol/openid-connect/auth?client_id=besart-gallery&redirect_uri=https://besarts.biz.id/login-callback&response_type=code&scope=openid')
     }
   }, [])
 
@@ -54,7 +55,7 @@ const CheckoutPage = () => {
       orderItems: orderItems
     }
 
-    axios.post("http://localhost:9000/orders", reqBody, {
+    axios.post("https://api.besarts.biz.id/orders", reqBody, {
       headers: {
         Authorization: "Bearer " + token,
         "Content-Type": "application/json",
@@ -69,13 +70,17 @@ const CheckoutPage = () => {
 
   return (
     <main style={{backgroundColor: '#f9f9f9'}}>
+      <Helmet>
+        <title>Checkout | BESArt Gallery</title>
+      </Helmet>
+
       <AppBar userName={profileName} />
       <Box sx={{m: 4}}>
         <Typography variant="h4" fontWeight="bold" gutterBottom>Checkout</Typography>
       </Box>
 
       <Grid container={true} spacing={2} sx={{m: 4}}>
-        <Grid size={8}>
+        <Grid size={{md: 8, xs: 12}}>
           <Grid container={true} spacing={2} sx={{
             backgroundColor: '#ffffff',
             borderRadius: '16px',
@@ -85,7 +90,7 @@ const CheckoutPage = () => {
             <Grid size={12}>
               <Typography variant="h6" align="left">Shipping Address</Typography>
             </Grid>
-            <Grid size={6}>
+            <Grid size={{md: 6, xs: 12}}>
               <TextField
                 required
                 fullWidth
@@ -94,7 +99,7 @@ const CheckoutPage = () => {
                 label="Full Name"></TextField>
             </Grid>
             
-            <Grid size={6}>
+            <Grid size={{md: 6, xs: 12}}>
               <TextField
                 required
                 fullWidth
@@ -165,7 +170,11 @@ const CheckoutPage = () => {
                   </Box>
 
                   {/* Right: Quantity & Price */}
-                  <Box whiteSpace="nowrap">
+                  <Box whiteSpace="nowrap" sx={{
+                    display: {
+                      xs: 'none', // hide on xs
+                      sm: 'block', // show on sm and up
+                    }}}>
                     <Typography variant="body1">
                       1 x IDR {new Intl.NumberFormat("id").format(product.price)}
                     </Typography>
@@ -176,7 +185,7 @@ const CheckoutPage = () => {
           </Grid>
         </Grid>
 
-        <Grid size={4} sx={{
+        <Grid size={{md: 4, xs: 12}} sx={{
             backgroundColor: '#ffffff',
             borderRadius: '16px',
             padding: 2,
