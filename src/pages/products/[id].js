@@ -4,7 +4,6 @@ import { useAuth } from '../../context/auth-context';
 import { useCart } from '../../context/cart-context';
 import AppBar from '../../components/app-bar';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Container from "@mui/material/Container";
 import { Link } from 'gatsby'
 import MuiLink from '@mui/material/Link'
 import Typography from "@mui/material/Typography";
@@ -79,7 +78,7 @@ const ProductListPage = ({ params }) => {
         <title>{product.name} | BESArt Gallery</title>
       </Helmet>
       <AppBar userName={profileName} cartOnClick={showCart} />
-      <Container sx={{m: 4}}>
+      <Grid container sx={{m: 4}}>
         <Breadcrumbs aria-label="breadcrumb">
           <MuiLink
             component={Link}
@@ -108,7 +107,7 @@ const ProductListPage = ({ params }) => {
           </MuiLink>
           <Typography sx={{ color: 'text.primary' }}>{product.name}</Typography>
         </Breadcrumbs>
-      </Container>
+      </Grid>
       <Grid container sx={{m: 4}} spacing={2}>
         <Grid size={12}>
           <Box

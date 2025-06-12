@@ -10,6 +10,7 @@ import { navigate } from 'gatsby';
 import { default as axios } from 'axios';
 import LoginModalComponent from "../../components/login-modal";
 import { Helmet } from "react-helmet";
+import FooterSection from '../../components/footer';
 
 const categories = [
   'All',
@@ -64,11 +65,10 @@ const ProductListPage = () => {
 
       <AppBar userName={profileName} cartOnClick={showCart} />
       <Grid container={true} spacing={2} sx={{m: 4}}>
-        <Grid size={3}>
+        <Grid size={{xs: 12, md: 3}}>
           <Box
             sx={{
-              width: 240,
-              borderRadius: 3,
+              borderRadius: '16px',
               backgroundColor: '#f9f9f9',
               p: 3,
             }}
@@ -87,25 +87,29 @@ const ProductListPage = () => {
           </Box>
         </Grid>
 
-        <Grid container spacing={2} size={8}>
-          {products.map((product) => (
-            <Grid size={{md: 4, xs: 12}} key={product.id}>
-              <SeamlessProductCard 
-                image={product.image}
-                name={product.name}
-                price={product.discountedPrice}
-                oldPrice={product.originalPrice}
-                rating={product.rating}
-                onClick={() => { navigate("/products/" + product.id) }}
-              />
-            </Grid>
-          ))}
+        <Grid size={{xs: 12, md: 8}}>
+          <Grid container spacing={2}>
+            {products.map((product) => (
+              <Grid size={{md: 4, xs: 12}} key={product.id}>
+                <SeamlessProductCard 
+                  image={product.image}
+                  name={product.name}
+                  price={product.discountedPrice}
+                  oldPrice={product.originalPrice}
+                  rating={product.rating}
+                  onClick={() => { navigate("/products/" + product.id) }}
+                />
+              </Grid>
+            ))}
 
-          <Grid size={12}>
-            <PaginationComponent count={100} page={1} />
+            <Grid size={12}>
+              <PaginationComponent count={100} page={1} />
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
+
+      <FooterSection />
 
       <CartDrawer open={cartDrawerShowed} onClose={closeCart} />
 

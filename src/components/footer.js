@@ -12,6 +12,7 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import GoogleIcon from '@mui/icons-material/Google';
 import TwitterIcon from '@mui/icons-material/Twitter';
+import { Link as GatsbyLink } from 'gatsby'
 
 export default function FooterSection() {
   return (
@@ -66,8 +67,9 @@ export default function FooterSection() {
               'Returns & Refunds',
             ].map((item, i) => (
               <Link
+                component={GatsbyLink}
                 key={i}
-                href="#"
+                to="/orders"
                 underline="none"
                 display="block"
                 color="text.primary"
