@@ -12,11 +12,26 @@ import FooterSection from '../../components/footer';
 import Chip from "@mui/material/Chip";
 import Link from "@mui/material/Link";
 import { navigate } from "gatsby";
+import { default as axios } from 'axios';
 
-const OrderDetailPage = ({ props }) => {
+const OrderDetailPage = ({ params }) => {
   const { token, profileName } = useAuth();
   const [cartDrawerShowed, setCartDrawerShowed] = React.useState(false)
   const [loginModalShowed, setLoginModalShowed] = React.useState(false)
+  const [order, setOrder] = React.useState({
+    shipping: {},
+    orderItems: []
+  })
+
+  React.useEffect(() => {
+    axios.get("https://api.besarts.biz.id/orders/" + params.id, {
+      headers: {
+        Authorization: "Bearer " + token
+      }
+    }).then((response) => {
+      setOrder(response.data)
+    })
+  }, [])
 
   if (!token) {
     navigate("/")
@@ -45,7 +60,7 @@ const OrderDetailPage = ({ props }) => {
     modal = ""
   }
 
-  const orderId = '1a2af919-ac78-4e1b-93ac-4b46482422aa'
+  const orderId = order.id
   const phoneNumber = '6281392116185';
   const prefilledMessage = encodeURIComponent(`Hi! I've paid the order and want to do confirmation on order ${orderId}`);
   const whatsappLink = `https://wa.me/${phoneNumber}?text=${prefilledMessage}`;
@@ -75,19 +90,21 @@ const OrderDetailPage = ({ props }) => {
 
             <Grid size={12}>
               <Typography variant="subtitle1" align="left" color="textSecondary">Order ID</Typography>
-              <Typography variant="body1" align="left">1a2af919-ac78-4e1b-93ac-4b46482422aa</Typography>
+              <Typography variant="body1" align="left">{order.id}</Typography>
             </Grid>
 
             <Grid size={{md: 6, xs: 12}}>
               <Typography variant="subtitle1" align="left" color="textSecondary">Order Time</Typography>
-              <Typography variant="body1" align="left">12 June 2025 08:15 WIB</Typography>
+              <Typography variant="body1" align="left">{order.orderTime}</Typography>
             </Grid>
             
             <Grid size={{md: 6, xs: 12}}>
               <Typography variant="subtitle1" align="left" color="textSecondary">Order Status</Typography>
               <Box display="flex" justifyContent="left" alignItems="center">
-                <Chip label="waiting for confirmation" color="warning" />
-                <Link href={whatsappLink} underline="none" variant="subtitle1">&nbsp; Confirm Now</Link>
+                <Chip label={order.status} color={order.status === "open" ? "warning" : "primary"} />
+                {
+                  order.status === "open" && <Link href={whatsappLink} underline="none" variant="subtitle1">&nbsp; Confirm Now</Link>
+                }
               </Box>
             </Grid>
           </Grid>
@@ -105,22 +122,22 @@ const OrderDetailPage = ({ props }) => {
             </Grid>
             <Grid size={{md: 6, xs: 12}}>
               <Typography variant="subtitle1" align="left" color="textSecondary">Full Name</Typography>
-              <Typography variant="body1" align="left">John Doe</Typography>
+              <Typography variant="body1" align="left">{order.shipping.fullName}</Typography>
             </Grid>
             
             <Grid size={{md: 6, xs: 12}}>
             <Typography variant="subtitle1" align="left" color="textSecondary">Phone Number</Typography>
-              <Typography variant="body1" align="left">+6281123456789</Typography>
+              <Typography variant="body1" align="left">{order.shipping.phoneNumber}</Typography>
             </Grid>
 
             <Grid size={12}>
               <Typography variant="subtitle1" align="left" color="textSecondary">Full Address</Typography>
-              <Typography variant="body1" align="left">Jl KH. Isom No 05 RT 05 RW 05 Bancaan Tengah, Salatiga</Typography>
+              <Typography variant="body1" align="left">{order.shipping.fullAddress}</Typography>
             </Grid>
 
             <Grid size={12}>
             <Typography variant="subtitle1" align="left" color="textSecondary">Additional Notes</Typography>
-              <Typography variant="body1" align="left">Unit C6</Typography>
+              <Typography variant="body1" align="left">{order.shipping.notes ? order.shipping.notes : "-"}</Typography>
             </Grid>
           </Grid>
         </Grid>
@@ -137,48 +154,50 @@ const OrderDetailPage = ({ props }) => {
               <Typography variant="h6" align="left">Items</Typography>
             </Grid>
 
-            <Grid size={12} key="dd85f500-3632-4b40-96c1-867c58c3f61e">
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                sx={{
-                  padding: 2,
-                }}
-                gap={2}>
+            {order.orderItems.map((item) => (
+              <Grid size={12} key={item.id}>
                 <Box
-                  component="img"
-                  src="https://i.etsystatic.com/53911636/r/il/7a2334/6751841022/il_1588xN.6751841022_5sy4.jpg"
-                  alt="Parental Home"
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
                   sx={{
-                    width: 128,
-                    height: 128,
-                    objectFit: 'cover',
-                    borderRadius: 1,
+                    padding: 2,
                   }}
-                />
+                  gap={2}>
+                  <Box
+                    component="img"
+                    src={item.productImage}
+                    alt={item.productName}
+                    sx={{
+                      width: 128,
+                      height: 128,
+                      objectFit: 'cover',
+                      borderRadius: 1,
+                    }}
+                  />
 
-                {/* Middle: Info */}
-                <Box flex={1} sx={{
-                  textAlign: 'left',              
-                }}>
-                  <Typography variant="body1">
-                    Parental Home
-                  </Typography>
-                </Box>
+                  {/* Middle: Info */}
+                  <Box flex={1} sx={{
+                    textAlign: 'left',              
+                  }}>
+                    <Typography variant="body1">
+                      {item.productName}
+                    </Typography>
+                  </Box>
 
-                {/* Right: Quantity & Price */}
-                <Box whiteSpace="nowrap" sx={{
-                  display: {
-                    xs: 'none', // hide on xs
-                    sm: 'block', // show on sm and up
-                  }}}>
-                  <Typography variant="body1">
-                    1 x IDR {new Intl.NumberFormat("id").format(10000000)}
-                  </Typography>
+                  {/* Right: Quantity & Price */}
+                  <Box whiteSpace="nowrap" sx={{
+                    display: {
+                      xs: 'none', // hide on xs
+                      sm: 'block', // show on sm and up
+                    }}}>
+                    <Typography variant="body1">
+                      {item.qty} x IDR {new Intl.NumberFormat("id").format(item.productPrice)}
+                    </Typography>
+                  </Box>
                 </Box>
-              </Box>
-            </Grid>
+              </Grid>
+            ))}
           </Grid>
         </Grid>
       </Grid>

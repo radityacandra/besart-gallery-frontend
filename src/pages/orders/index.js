@@ -12,11 +12,23 @@ import CardActionArea from "@mui/material/CardActionArea";
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import FooterSection from '../../components/footer';
 import { navigate } from "gatsby";
+import { default as axios } from 'axios';
 
 const OrderListPage = () => {
   const { token, profileName } = useAuth();
   const [cartDrawerShowed, setCartDrawerShowed] = React.useState(false)
   const [loginModalShowed, setLoginModalShowed] = React.useState(false)
+  const [orders, setOrders] = React.useState([])
+
+  React.useEffect(() => {
+    axios.get("https://api.besarts.biz.id/orders", {
+      headers: {
+        Authorization: "Bearer " + token
+      }
+    }).then(function(response) {
+      setOrders(response.data.data)
+    })
+  }, [])
 
   if (!token) {
     navigate("/")
@@ -59,100 +71,26 @@ const OrderListPage = () => {
             <Typography variant="h4" fontWeight="bold" gutterBottom>Order List</Typography>
           </Grid>
 
-          <Grid size={12}>
-            <CardActionArea onClick={() => navigate("/orders/1")} disableRipple sx={{backgroundColor: '#fff', borderRadius: 2, px: {md: 2, xs: 2}, py: 2, boxShadow: '0 2px rgba(0, 0, 0, 0.1)'}}>
-              <Grid container spacing={2}>
-                <Grid size={4} sx={{display: "flex", alignItems: "center"}}>
-                  <Typography variant="subtitle1" color="textSecondary">dd85f500-3632-4b40-96c1-867c58c3f61e</Typography>
+          {orders.map((order) => (
+            <Grid size={12} key={order.id}>
+              <CardActionArea onClick={() => navigate(`/orders/${order.id}`)} disableRipple sx={{backgroundColor: '#fff', borderRadius: 2, px: {md: 2, xs: 2}, py: 2, boxShadow: '0 2px rgba(0, 0, 0, 0.1)'}}>
+                <Grid container spacing={2}>
+                  <Grid size={4} sx={{display: "flex", alignItems: "center"}}>
+                    <Typography variant="subtitle1" color="textSecondary">{order.id}</Typography>
+                  </Grid>
+                  <Grid size={3} sx={{display: "flex", justifyContent: 'center'}}>
+                    <Chip label={order.status} color={order.status === "open" ? "warning" : "primary"} />
+                  </Grid>
+                  <Grid size={3} sx={{display: "flex", alignItems: "center", justifyContent: 'center'}}>
+                    <Typography variant="subtitle1">IDR {new Intl.NumberFormat("id").format(order.totalAmount)}</Typography>
+                  </Grid>
+                  <Grid size={2} sx={{display: "flex", alignItems: "center", justifyContent: "end"}}>
+                    <ArrowRightAltIcon />
+                  </Grid>
                 </Grid>
-                <Grid size={3} sx={{display: "flex", justifyContent: 'center'}}>
-                  <Chip label="waiting for confirmation" color="warning" />
-                </Grid>
-                <Grid size={3} sx={{display: "flex", alignItems: "center", justifyContent: 'center'}}>
-                  <Typography variant="subtitle1">IDR 10.000.000</Typography>
-                </Grid>
-                <Grid size={2} sx={{display: "flex", alignItems: "center", justifyContent: "end"}}>
-                  <ArrowRightAltIcon />
-                </Grid>
-              </Grid>
-            </CardActionArea>
-          </Grid>
-
-          <Grid size={12}>
-            <CardActionArea onClick={() => navigate("/orders/1")} disableRipple sx={{backgroundColor: '#fff', borderRadius: 2, px: {md: 2, xs: 2}, py: 2, boxShadow: '0 2px rgba(0, 0, 0, 0.1)'}}>
-              <Grid container spacing={2}>
-                <Grid size={4} sx={{display: "flex", alignItems: "center"}}>
-                  <Typography variant="subtitle1" color="textSecondary">dd85f500-3632-4b40-96c1-867c58c3f61e</Typography>
-                </Grid>
-                <Grid size={3} sx={{display: "flex", justifyContent: 'center'}}>
-                  <Chip label="confirmed" color="success" />
-                </Grid>
-                <Grid size={3} sx={{display: "flex", alignItems: "center", justifyContent: 'center'}}>
-                  <Typography variant="subtitle1">IDR 10.000.000</Typography>
-                </Grid>
-                <Grid size={2} sx={{display: "flex", alignItems: "center", justifyContent: "end"}}>
-                  <ArrowRightAltIcon />
-                </Grid>
-              </Grid>
-            </CardActionArea>
-          </Grid>
-
-          <Grid size={12}>
-            <CardActionArea onClick={() => navigate("/orders/1")} disableRipple sx={{backgroundColor: '#fff', borderRadius: 2, px: {md: 2, xs: 2}, py: 2, boxShadow: '0 2px rgba(0, 0, 0, 0.1)'}}>
-              <Grid container spacing={2}>
-                <Grid size={4} sx={{display: "flex", alignItems: "center"}}>
-                  <Typography variant="subtitle1" color="textSecondary">dd85f500-3632-4b40-96c1-867c58c3f61e</Typography>
-                </Grid>
-                <Grid size={3} sx={{display: "flex", justifyContent: 'center'}}>
-                  <Chip label="canceled" color="error" />
-                </Grid>
-                <Grid size={3} sx={{display: "flex", alignItems: "center", justifyContent: 'center'}}>
-                  <Typography variant="subtitle1">IDR 10.000.000</Typography>
-                </Grid>
-                <Grid size={2} sx={{display: "flex", alignItems: "center", justifyContent: "end"}}>
-                  <ArrowRightAltIcon />
-                </Grid>
-              </Grid>
-            </CardActionArea>
-          </Grid>
-
-          <Grid size={12}>
-            <CardActionArea onClick={() => navigate("/orders/1")} disableRipple sx={{backgroundColor: '#fff', borderRadius: 2, px: {md: 2, xs: 2}, py: 2, boxShadow: '0 2px rgba(0, 0, 0, 0.1)'}}>
-              <Grid container spacing={2}>
-                <Grid size={4} sx={{display: "flex", alignItems: "center"}}>
-                  <Typography variant="subtitle1" color="textSecondary">dd85f500-3632-4b40-96c1-867c58c3f61e</Typography>
-                </Grid>
-                <Grid size={3} sx={{display: "flex", justifyContent: 'center'}}>
-                  <Chip label="confirmed" color="success" />
-                </Grid>
-                <Grid size={3} sx={{display: "flex", alignItems: "center", justifyContent: 'center'}}>
-                  <Typography variant="subtitle1">IDR 10.000.000</Typography>
-                </Grid>
-                <Grid size={2} sx={{display: "flex", alignItems: "center", justifyContent: "end"}}>
-                  <ArrowRightAltIcon />
-                </Grid>
-              </Grid>
-            </CardActionArea>
-          </Grid>
-
-          <Grid size={12}>
-            <CardActionArea onClick={() => navigate("/orders/1")} disableRipple sx={{backgroundColor: '#fff', borderRadius: 2, px: {md: 2, xs: 2}, py: 2, boxShadow: '0 2px rgba(0, 0, 0, 0.1)'}}>
-              <Grid container spacing={2}>
-                <Grid size={4} sx={{display: "flex", alignItems: "center"}}>
-                  <Typography variant="subtitle1" color="textSecondary">dd85f500-3632-4b40-96c1-867c58c3f61e</Typography>
-                </Grid>
-                <Grid size={3} sx={{display: "flex", justifyContent: 'center'}}>
-                  <Chip label="confirmed" color="success" />
-                </Grid>
-                <Grid size={3} sx={{display: "flex", alignItems: "center", justifyContent: 'center'}}>
-                  <Typography variant="subtitle1">IDR 10.000.000</Typography>
-                </Grid>
-                <Grid size={2} sx={{display: "flex", alignItems: "center", justifyContent: "end"}}>
-                  <ArrowRightAltIcon />
-                </Grid>
-              </Grid>
-            </CardActionArea>
-          </Grid>
+              </CardActionArea>
+            </Grid>
+          ))}
         </Grid>
       </div>
 
